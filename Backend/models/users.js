@@ -5,10 +5,10 @@ const Users = sequelize.define(
   "users",
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -29,7 +29,7 @@ const Users = sequelize.define(
     refreshToken: {
       type: DataTypes.STRING,
       allowNull: true,
-    }
+    },
   },
   {
     timestamps: true,

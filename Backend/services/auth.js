@@ -9,10 +9,12 @@ exports.generateAccessToken = async (user) => {
     const userData = {
       id: user.id,
       email: user.email,
+      mobile: user.mobile
     };
 
     const jwtToken = jwt.sign(userData, accessTokenSecretKey, {
-      expiresIn: "30m",
+      // expiresIn: "30m",
+       expiresIn: "24h",
     });
 
     return jwtToken;

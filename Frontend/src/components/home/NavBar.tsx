@@ -13,7 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useAppDispatch } from "../../hooks/reduxHooks";
-import { logoutUser } from "../../redux/reducers/authReducers";
+import { logoutUser } from "../../redux/reducers/authSlice";
 import { toast } from "react-toastify";
 
 const pages = ["Home", "Chats", "Groups"];

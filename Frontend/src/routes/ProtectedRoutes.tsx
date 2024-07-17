@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../hooks/reduxHooks";
-import { selectUserData } from "../redux/reducers/authReducers";
+import { selectUserData } from "../redux/reducers/authSlice";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Loading from "../common/Loading";
 

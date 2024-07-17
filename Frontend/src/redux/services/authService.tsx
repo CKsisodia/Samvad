@@ -9,7 +9,7 @@ class AuthApiServices {
 
   userSignup = async (signupData: userSignup) => {
     try {
-      const response = await ApiHelper.post("/user/signup", signupData);
+      const response = await ApiHelper.post("/auth/signup", signupData);
       toast.success(response?.data?.message);
       return response?.data;
     } catch (error: any) {
@@ -20,7 +20,7 @@ class AuthApiServices {
 
   userLogin = async (loginData: userLogin) => {
     try {
-      const response = await ApiHelper.post("/user/login", loginData);
+      const response = await ApiHelper.post("/auth/login", loginData);
       toast.success(response?.data?.message);
       return response?.data;
     } catch (error: any) {
@@ -31,7 +31,7 @@ class AuthApiServices {
 
   userInfo = async () => {
     try {
-      const response = await ApiHelper.get("/user/get-user-info");
+      const response = await ApiHelper.get("/auth/get-user-info");
       return response?.data;
     } catch (error) {
       throw error;

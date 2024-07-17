@@ -78,7 +78,7 @@ class ApiHelper {
 
       const response = await this.client.post<{
         data: { accessToken: string };
-      }>("http://localhost:3000/user/refresh", {
+      }>("http://localhost:3000/auth/refresh", {
         refreshToken: refreshToken,
         email: userEmail,
       });
@@ -109,7 +109,7 @@ class ApiHelper {
     return this.client.get(url, { params });
   }
 
-  public post(url: string, data: any): Promise<any> {
+  public post(url: string, data?: any): Promise<any> {
     return this.client.post(url, data);
   }
 

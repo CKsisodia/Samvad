@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../hooks/reduxHooks";
-import { selectUserData } from "../redux/reducers/authReducers";
+import { selectUserData } from "../redux/reducers/authSlice";
 
 const RedirectToAuth = () => {
   const user = useAppSelector(selectUserData);

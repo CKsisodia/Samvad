@@ -6,6 +6,7 @@ const {
 const ApiError = require("../utils/ApiError");
 const ApiResponse = require("../utils/ApiResponse");
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 
 exports.userSignUp = async (req, res) => {
   try {
@@ -16,10 +17,17 @@ exports.userSignUp = async (req, res) => {
     }
 
     const existingUser = await Users.findOne({
-      where: { email },
+      where: {
+        [Op.or]: [{ email }, { mobile }],
+      },
     });
+
     if (existingUser) {
-      return res.status(400).json(new ApiError("User already exists"));
+      const errorMessage =
+        existingUser.email === email
+          ? "User already exists with this email"
+          : "User already exists with this mobile number";
+      return res.status(400).json(new ApiError(errorMessage));
     }
 
     const saltRounds = 10;

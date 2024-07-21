@@ -47,7 +47,6 @@ class ChatApiServices {
 
   sendMessage = async (messageData: sendMessageData) => {
     try {
-      console.log(messageData);
       const response = await ApiHelper.post(
         `/chats/send-message/${messageData?.receiverID}`,
         { message: messageData?.message }
@@ -172,6 +171,35 @@ class ChatApiServices {
       return response?.data;
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  sendGroupMessage = async ({
+    groupID,
+    message,
+  }: {
+    groupID: number;
+    message: string;
+  }) => {
+    try {
+      const response = await ApiHelper.post(
+        `/group/send-group-message/${groupID}`,
+        { message: message }
+      );
+      return response?.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  getGroupMessages = async (groupID: number) => {
+    try {
+      const response = await ApiHelper.get(
+        `/group/all-group-messages/${groupID}`
+      );
+      return response?.data;
+    } catch (error) {
       throw error;
     }
   };

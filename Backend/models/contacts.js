@@ -24,7 +24,7 @@ const Contacts = sequelize.define(
       allowNull: false,
       references: {
         model: Users,
-        as: "id",
+        key: "id",
       },
     },
   },

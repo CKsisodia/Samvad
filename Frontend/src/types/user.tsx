@@ -95,6 +95,19 @@ export type GroupInfoResponse = {
   }[];
 };
 
+export type GroupMessagesResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    id: number;
+    senderID: number;
+    groupID: number;
+    message: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+};
+
 export type MemberData = {
   groupID: number;
   userID: number;
@@ -122,19 +135,19 @@ export type SpecificGroupInfoResponse = {
     }[];
     groupDetails: {
       title: string;
-      totalMembers : number;
-      createdAt : string;
-      createdBy : string
-    }
+      totalMembers: number;
+      createdAt: string;
+      createdBy: string;
+    };
   };
 };
 
 export type EditGroup = {
-  groupID : number;
-  newTitle : string
-}
+  groupID: number;
+  newTitle: string;
+};
 
 export type groupUser = {
-  groupID : number;
-  userID : number;
-}
+  groupID: number;
+  userID: number;
+};

@@ -4,6 +4,7 @@ import {
   ContactsResponse,
   findContactResponse,
   GroupInfoResponse,
+  GroupMessagesResponse,
   SpecificGroupInfoResponse,
 } from "../../types/user";
 import {
@@ -11,6 +12,7 @@ import {
   getAllContactsAction,
   getAllMessageAction,
   getGroupInfoAction,
+  getGroupMessageAction,
   getSpecificGroupInfoAction,
 } from "../actions/asyncChatActions";
 import { RootState } from "../store";
@@ -24,6 +26,7 @@ interface chatDataState {
   groupInfo: GroupInfoResponse | null;
   specificGroupInfo: SpecificGroupInfoResponse | null;
   conversation: string;
+  groupChats: GroupMessagesResponse | null;
 }
 
 const initialState: chatDataState = {
@@ -35,6 +38,7 @@ const initialState: chatDataState = {
   groupInfo: null,
   specificGroupInfo: null,
   conversation: localStorage.getItem("ContactORGroup") || "contact",
+  groupChats: null,
 };
 
 const chatSlice = createSlice({
@@ -49,7 +53,6 @@ const chatSlice = createSlice({
       localStorage.setItem("selectedContact", JSON.stringify(action.payload));
     },
     selectGroupForID(state, action) {
-      
       if (action.payload === "removeGroup") {
         state.groupID = 0;
       } else {
@@ -83,6 +86,10 @@ const chatSlice = createSlice({
       const response = action.payload;
       state.specificGroupInfo = response;
     });
+    builder.addCase(getGroupMessageAction.fulfilled, (state, action) => {
+      const response = action.payload;
+      state.groupChats = response;
+    });
   },
 });
 
@@ -104,5 +111,6 @@ export const selectSpecificGroupInfo = (state: RootState) =>
   state.chats.specificGroupInfo;
 export const selectConversation = (state: RootState) =>
   state.chats.conversation;
+export const selectGroupChatData = (state: RootState) => state.chats.groupChats;
 
 export default chatSlice.reducer;

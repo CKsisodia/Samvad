@@ -24,6 +24,7 @@ import {
   getAllMessageAction,
   sendMessageAction,
 } from "../../redux/actions/asyncChatActions";
+import { getUserInfoAction } from "../../redux/actions/asyncAuthActions";
 
 const ChatContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -108,11 +109,12 @@ const Chats = () => {
   useEffect(() => {
     const fetchMessages = () => {
       dispatch(getAllMessageAction(contactID));
+      dispatch(getUserInfoAction());
+
     };
     fetchMessages();
 
     // const intervalId = setInterval(fetchMessages, 1000);
-
     // return () => clearInterval(intervalId);
   }, [contactID, dispatch]);
 
@@ -122,6 +124,7 @@ const Chats = () => {
       receiverID: contactID,
     };
     dispatch(sendMessageAction(sendData));
+    dispatch(getUserInfoAction());
     setInput("");
   };
 

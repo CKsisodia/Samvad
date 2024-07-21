@@ -1,9 +1,10 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../db/database");
 const Users = require("./users");
+const Group = require("./group");
 
-const Chats = sequelize.define(
-  "chats",
+const GroupChats = sequelize.define(
+  "groupchat",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -19,11 +20,11 @@ const Chats = sequelize.define(
         key: "id",
       },
     },
-    receiverID: {
+    groupID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Users,
+        model: Group,
         key: "id",
       },
     },
@@ -34,14 +35,13 @@ const Chats = sequelize.define(
   },
   {
     timestamps: true,
-    paranoid: true,
   }
 );
 
-Users.hasMany(Chats, { foreignKey: "senderID" });
-Chats.belongsTo(Users, { foreignKey: "senderID", as: "Sender" });
+Group.hasMany(GroupChats, { foreignKey: "senderID" });
+GroupChats.belongsTo(Group, { foreignKey: "senderID", as: "Sender" });
 
-Users.hasMany(Chats, { foreignKey: "receiverID" });
-Chats.belongsTo(Users, { foreignKey: "receiverID", as: "Receiver" });
+Group.hasMany(GroupChats, { foreignKey: "groupID" });
+GroupChats.belongsTo(Group, { foreignKey: "groupID", as: "Group" });
 
-module.exports = Chats;
+module.exports = GroupChats;

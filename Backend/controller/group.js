@@ -1,9 +1,10 @@
 const Group = require("../models/group");
+const GroupChats = require("../models/groupChats");
 const GroupMember = require("../models/groupMember");
 const Users = require("../models/users");
-const { use } = require("../routes/group");
 const ApiError = require("../utils/ApiError");
 const ApiResponse = require("../utils/ApiResponse");
+const { Op } = require("sequelize");
 
 exports.createGroup = async (req, res) => {
   try {
@@ -238,7 +239,65 @@ exports.deleteGroup = async (req, res) => {
 
     await groupToBeDeleted.destroy();
 
-    return res.status(200).json(new ApiResponse("Group deleted successfully",groupToBeDeleted));
+    return res
+      .status(200)
+      .json(new ApiResponse("Group deleted successfully", groupToBeDeleted));
+  } catch (error) {
+    return res.status(500).json(new ApiError("Something went wrong"));
+  }
+};
+
+exports.sendGroupMessage = async (req, res) => {
+  try {
+    const { groupID } = req.params;
+    const { message } = req.body;
+    const { id: senderID } = req.user;
+
+    if (!(groupID && senderID && message)) {
+      return res.status(400).json(new ApiError("Message can't be sent"));
+    }
+
+    const isSenderGroupMember = await GroupMember.findOne({
+      where: {
+        userID: senderID,
+        groupID: groupID,
+      },
+    });
+
+    if (!isSenderGroupMember) {
+      return res.status(404).json(new ApiError("You are not member of group"));
+    }
+
+    const newMessage = await GroupChats.create({
+      senderID,
+      groupID,
+      message,
+    });
+
+    return res.status(200).json(new ApiResponse("Message Sent", newMessage));
+  } catch (error) {
+    return res.status(500).json(new ApiError("Something went wrong"));
+  }
+};
+
+exports.getAllGroupMessage = async (req, res) => {
+  try {
+    const { groupID } = req.params;
+
+    if (!groupID) {
+      return res.status(400).json(new ApiError("can't fetch messages"));
+    }
+
+    const messages = await GroupChats.findAll({
+      where: {
+        groupID,
+      },
+      order: [["createdAt", "ASC"]],
+    });
+
+    return res
+      .status(200)
+      .json(new ApiResponse("Messages retrieved successfully", messages));
   } catch (error) {
     return res.status(500).json(new ApiError("Something went wrong"));
   }

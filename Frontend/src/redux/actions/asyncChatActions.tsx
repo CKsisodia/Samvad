@@ -133,3 +133,28 @@ export const deleteGroupAction = createAsyncThunk(
     return response;
   }
 );
+
+export const sendGroupMessageAction = createAsyncThunk(
+  "sendGroupMessageAction",
+  async (
+    { groupID, message }: { groupID: number; message: string },
+    thunkAPI
+  ) => {
+    const response = await chatApiServices.sendGroupMessage({
+      groupID,
+      message,
+    });
+    if (response) {
+      thunkAPI.dispatch(getGroupMessageAction(groupID));
+    }
+    return response;
+  }
+);
+
+export const getGroupMessageAction = createAsyncThunk(
+  "getGroupMessageAction",
+  async (groupID: number) => {
+    const response = await chatApiServices.getGroupMessages(groupID);
+    return response;
+  }
+);

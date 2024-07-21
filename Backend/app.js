@@ -8,6 +8,7 @@ const app = express();
 const authRoutes = require("./routes/auth");
 const contactRoutes = require("./routes/contacts");
 const chatRoutes = require("./routes/chats");
+const groupRoutes = require("./routes/group")
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
@@ -31,6 +32,7 @@ app.options(
 app.use("/auth", authRoutes);
 app.use("/user", contactRoutes);
 app.use("/chats", chatRoutes);
+app.use("/group", groupRoutes);
 
 sequelize
   .sync()

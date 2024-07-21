@@ -48,6 +48,20 @@ const MessagesContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "#e5ddd5",
   display: "flex",
   flexDirection: "column",
+   // Custom scrollbar styles
+   "&::-webkit-scrollbar": {
+    width: "4px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "#888",
+    borderRadius: "4px",
+  },
+  "&::-webkit-scrollbar-thumb:hover": {
+    backgroundColor: "#555",
+  },
+  "&::-webkit-scrollbar-track": {
+    backgroundColor: "#f0f0f0",
+  },
 }));
 
 const MessageBubble = styled(Paper)(({ theme }) => ({

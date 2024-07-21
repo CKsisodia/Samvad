@@ -9,7 +9,8 @@ exports.generateAccessToken = async (user) => {
     const userData = {
       id: user.id,
       email: user.email,
-      mobile: user.mobile
+      mobile: user.mobile,
+      name : user.name
     };
 
     const jwtToken = jwt.sign(userData, accessTokenSecretKey, {

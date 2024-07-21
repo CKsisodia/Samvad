@@ -15,6 +15,7 @@ export type getInfoApiResponse = {
   message: string;
   data: {
     id: string;
+    name: string;
     email: string;
   };
 };
@@ -81,3 +82,59 @@ export type ChatResponse = {
   message: string;
   data: ChatMessage[];
 };
+
+export type GroupInfoResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    userID: number;
+    groupID: number;
+    createdAt: string;
+    "group.title": string;
+    "group.totalMembers": number;
+  }[];
+};
+
+export type MemberData = {
+  groupID: number;
+  userID: number;
+  isAdmin: boolean;
+};
+
+export type SpecificGroupInfoResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    memberDetails: {
+      id: number;
+      isAdmin: boolean;
+      userID: number;
+      groupID: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      user: {
+        id: number;
+        name: string;
+        email: string;
+        mobile: string;
+      };
+    }[];
+    groupDetails: {
+      title: string;
+      totalMembers : number;
+      createdAt : string;
+      createdBy : string
+    }
+  };
+};
+
+export type EditGroup = {
+  groupID : number;
+  newTitle : string
+}
+
+export type groupUser = {
+  groupID : number;
+  userID : number;
+}

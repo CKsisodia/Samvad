@@ -117,8 +117,8 @@ class ApiHelper {
     return this.client.put(url, data);
   }
 
-  public delete(url: string): Promise<any> {
-    return this.client.delete(url);
+  public delete(url: string, data?: any): Promise<any> {
+    return this.client.delete(url, { data });
   }
 }
 

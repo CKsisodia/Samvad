@@ -146,6 +146,7 @@ exports.getUserInfo = async (req, res) => {
     }
     const userDetails = {
       id: userData.id,
+      name: userData.name,
       email: userData.email,
     };
     return res

@@ -12,13 +12,14 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { useAppDispatch } from "../../hooks/reduxHooks";
-import { logoutUser } from "../../redux/reducers/authSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { logoutUser, selectUserData } from "../../redux/reducers/authSlice";
 import { toast } from "react-toastify";
 
 const pages = ["Home", "Chats", "Groups"];
 const NavBar = () => {
   const dispatch = useAppDispatch();
+  const userData = useAppSelector(selectUserData)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -135,7 +136,7 @@ const NavBar = () => {
               </Button>
             ))}
           </Box>
-
+          <Typography sx={{mr:2}}>{userData?.data?.name}</Typography>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

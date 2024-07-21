@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  IconButton,
   InputAdornment,
   OutlinedInput,
   Paper,
@@ -14,34 +15,44 @@ import { FaUserGroup } from "react-icons/fa6";
 import { IoSearchSharp } from "react-icons/io5";
 import { MdGroupAdd } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { getAllContactsAction } from "../../redux/actions/asyncChatActions";
+import {
+  getAllContactsAction,
+  getSpecificGroupInfoAction,
+} from "../../redux/actions/asyncChatActions";
 import {
   contactUserid,
   resetSpecificContact,
+  selectContactOrGroup,
   selectContactsdata,
+  selectConversation,
+  selectGroupForID,
+  selectGroupInfo,
 } from "../../redux/reducers/chatSlice";
 import AddContact from "./AddContact";
+import { FcConferenceCall } from "react-icons/fc";
 import { avtarNameHandler } from "../../utils/helperFunctions";
+import AddGroup from "./AddGroup";
 
 const SideBar = () => {
   const dispatch = useAppDispatch();
-  const contactsData = useAppSelector(selectContactsdata);  
+  const contactsData = useAppSelector(selectContactsdata);
+  const conversation = useAppSelector(selectConversation);
+  const groupData = useAppSelector(selectGroupInfo);
   const [openAddContact, setOpenAddContact] = useState<Boolean>(false);
+  const [openGroup, setOpenGroup] = useState<Boolean>(false);
+
   const [selectedContact, setSelectedContact] = useState<number | null>(
     JSON.parse(localStorage.getItem("selectedContact") || "null")
+  );
+
+  const [selectedGroup, setSelectedGroup] = useState<number | null>(
+    JSON.parse(localStorage.getItem("selectedGroupID") || "null")
   );
 
   useEffect(() => {
     dispatch(getAllContactsAction());
   }, [dispatch]);
 
-  useEffect(() => {
-    localStorage.setItem("selectedContact", JSON.stringify(selectedContact));
-  }, [selectedContact]);
-
-  const handleOpenAddContact = () => {
-    setOpenAddContact(true);
-  };
   const handleCloseAddContact = () => {
     dispatch(resetSpecificContact());
     setTimeout(() => {
@@ -53,80 +64,131 @@ const SideBar = () => {
     setSelectedContact(id);
     dispatch(contactUserid(id));
   };
+  const handleGroupClick = (id: number) => {
+    setSelectedGroup(id);
+    dispatch(selectGroupForID(id));
+    dispatch(getSpecificGroupInfoAction(id));
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Box sx={{ display: "flex", m: 1, gap: 1 }}>
-        <Button variant="outlined" startIcon={<FaUser size="1rem" />}>
+      <Box sx={{ display: "flex", m: 1, gap: 1, justifyContent:'space-between' }}>
+        <Button
+          variant={conversation === "contact" ? "contained" : "outlined"}
+          startIcon={<FaUser size="1rem" />}
+          onClick={() => dispatch(selectContactOrGroup("contact"))}
+        >
           Contacts
         </Button>
         <Button
-          variant="outlined"
-          startIcon={<FaUserPlus size="1.3rem" />}
-          onClick={handleOpenAddContact}
+          variant={conversation === "group" ? "contained" : "outlined"}
+          startIcon={<FaUserGroup size="1.3rem" />}
+          onClick={() => dispatch(selectContactOrGroup("group"))}
         >
-          Add Contact
-        </Button>
-      </Box>
-
-      <Box sx={{ display: "flex", m: 1, gap: 1 }}>
-        <Button variant="outlined" startIcon={<FaUserGroup size="1.3rem" />}>
           Groups
         </Button>
-        <Button variant="outlined" startIcon={<MdGroupAdd size="1.5rem" />}>
-          Create Group
-        </Button>
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ display: "flex", justifyContent: "center" , p:1 }}>
         <OutlinedInput
-          id="outlined-adornment-weight"
           startAdornment={
             <InputAdornment position="start">
               <IoSearchSharp />
             </InputAdornment>
           }
-          aria-describedby="outlined-weight-helper-text"
-          inputProps={{
-            "aria-label": "weight",
-          }}
           size="small"
+          fullWidth
         />
       </Box>
 
-      <Box sx={{ flexGrow: 1, overflow: "hidden", px: 1.5 }}>
-        {contactsData?.data?.map((contact) => (
-          <Paper
-            key={contact?.id}
-            sx={{
-              my: 1,
-              mx: "auto",
-              p: 1,
-              cursor: "pointer",
-              backgroundColor:
-                selectedContact === contact?.contactUserID ? "grey.300" : "",
-              "&:hover": {
-                backgroundColor: "grey.300",
-              },
-            }}
-            onClick={() => handleContactClick(contact?.contactUserID)}
+      {conversation === "contact" && (
+        <Box sx={{ flexGrow: 1, overflow: "hidden", px: 1.5 }}>
+          <IconButton
+            size="large"
+            color="success"
+            onClick={() => setOpenAddContact(true)}
           >
-            <Stack
-              spacing={2}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
+            <FaUserPlus size="2rem" />
+          </IconButton>
+          {contactsData?.data?.map((contact) => (
+            <Paper
+              key={contact?.id}
+              sx={{
+                my: 1,
+                mx: "auto",
+                p: 1,
+                cursor: "pointer",
+                backgroundColor:
+                  selectedContact === contact?.contactUserID ? "grey.300" : "",
+                "&:hover": {
+                  backgroundColor: "grey.300",
+                },
+              }}
+              onClick={() => handleContactClick(contact?.contactUserID)}
             >
-              <Avatar>{avtarNameHandler(contact?.contactUser?.name)}</Avatar>
-              <Typography noWrap>{contact?.contactUser?.name}</Typography>
-              <Typography noWrap>{contact?.contactUser?.mobile}</Typography>
-            </Stack>
-          </Paper>
-        ))}
-      </Box>
+              <Stack
+                spacing={2}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Avatar>{avtarNameHandler(contact?.contactUser?.name)}</Avatar>
+                <Typography noWrap>{contact?.contactUser?.name}</Typography>
+                <Typography noWrap>{contact?.contactUser?.mobile}</Typography>
+              </Stack>
+            </Paper>
+          ))}
+        </Box>
+      )}
+
+      {conversation === "group" && (
+        <Box sx={{ flexGrow: 1, overflow: "hidden", px: 1.5 }}>
+          <IconButton
+            size="large"
+            color="success"
+            onClick={() => setOpenGroup(true)}
+          >
+            <MdGroupAdd size="2.2rem" />
+          </IconButton>
+          {groupData?.data?.map((group:any, index) => (
+            <Paper
+              key={index}
+              sx={{
+                my: 1,
+                mx: "auto",
+                p: 2,
+                cursor: "pointer",
+                backgroundColor:
+                  selectedGroup === group?.groupID ? "grey.300" : "",
+                "&:hover": {
+                  backgroundColor: "grey.300",
+                },
+              }}
+              onClick={() => handleGroupClick(group?.groupID)}
+            >
+              <Stack
+                spacing={2}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography noWrap>{group?.["group.title"]}</Typography>
+                <Typography noWrap>
+                  Members :- {group?.["group.totalMembers"]}
+                </Typography>
+              </Stack>
+            </Paper>
+          ))}
+        </Box>
+      )}
+
       <AddContact
         openAddContact={openAddContact}
         handleCloseAddContact={handleCloseAddContact}
+      />
+      <AddGroup
+        openGroup={openGroup}
+        handleCloseGroup={() => setOpenGroup(false)}
       />
     </Box>
   );

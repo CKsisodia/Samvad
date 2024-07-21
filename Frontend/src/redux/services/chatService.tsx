@@ -1,6 +1,12 @@
 import { toast } from "react-toastify";
 import ApiHelper from "../../utils/apiHelper";
-import { addContact, sendMessageData } from "../../types/user";
+import {
+  addContact,
+  EditGroup,
+  groupUser,
+  MemberData,
+  sendMessageData,
+} from "../../types/user";
 
 class ChatApiServices {
   static getInstance() {
@@ -16,12 +22,13 @@ class ChatApiServices {
       throw error;
     }
   };
+
   addContact = async (contactUserId: number) => {
     try {
       const response = await ApiHelper.post(
         `/user/add-contact/${contactUserId}`
       );
-      console.log(response);
+      toast.success(response?.data?.message);
       return response?.data;
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
@@ -56,6 +63,115 @@ class ChatApiServices {
       const response = await ApiHelper.get(`/chats/all-messages/${receiverID}`);
       return response?.data;
     } catch (error) {
+      throw error;
+    }
+  };
+
+  createGroup = async (title: string) => {
+    try {
+      const response = await ApiHelper.post("/group/create-group", { title });
+      toast.success(response?.data?.message);
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  getGroupInfo = async () => {
+    try {
+      const response = await ApiHelper.get("/group/group-info");
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  addGroupMember = async (memberData: MemberData) => {
+    try {
+      const body = {
+        userID: memberData.userID,
+        isAdmin: memberData.isAdmin,
+      };
+      const response = await ApiHelper.post(
+        `/group/add-group-member/${memberData.groupID}`,
+        body
+      );
+      toast.success(response?.data?.message);
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  getSpecificGroupInfo = async (groupID: number) => {
+    try {
+      const response = await ApiHelper.get(`/group/group-info/${groupID}`);
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  renameGroup = async (editGroup: EditGroup) => {
+    try {
+      const newTitle = editGroup.newTitle;
+      const response = await ApiHelper.put(
+        `/group/rename-group/${editGroup.groupID}`,
+        { newTitle }
+      );
+      toast.success(response?.data?.message);
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  changeAdminStatus = async (memberData: MemberData) => {
+    try {
+      const user = {
+        userID: memberData.userID,
+        isAdmin: memberData.isAdmin,
+      };
+      const response = await ApiHelper.put(
+        `/group/admin-status/${memberData.groupID}`,
+        user
+      );
+      toast.success(response?.data?.message);
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  deleteGroupMemeber = async (groupUser: groupUser) => {
+    try {
+      const userID = groupUser.userID;
+
+      const response = await ApiHelper.delete(
+        `/group/remove-member/${groupUser.groupID}`,
+        { userID }
+      );
+      toast.success(response?.data?.message);
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+      throw error;
+    }
+  };
+
+  deleteGroup = async (groupID: string) => {
+    try {
+      const response = await ApiHelper.delete(`/group/delete-group/${groupID}`);
+      toast.success(response?.data?.message);
+      return response?.data;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
       throw error;
     }
   };

@@ -20,8 +20,6 @@ const ProtectedRoutes = () => {
     return <Loading />;
   }
 
-  console.log(user?.status, "okokok")
-
   return user?.status ? (
     <Outlet />
   ) : (

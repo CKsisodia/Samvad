@@ -37,11 +37,6 @@ router.delete(
   groupController.deleteGroup
 );
 
-router.post(
-  "/send-group-message/:groupID",
-  validateToken,
-  groupController.sendGroupMessage
-);
 router.get(
   "/all-group-messages/:groupID",
   validateToken,

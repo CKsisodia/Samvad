@@ -5,7 +5,7 @@ import {
   selectGroupInfo,
   selectSpecificGroupInfo,
 } from "../../redux/reducers/chatSlice";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import {
   deleteGroupAction,
   getSpecificGroupInfoAction,
@@ -14,13 +14,23 @@ import { formatDate } from "../../utils/helperFunctions";
 import { FaEdit } from "react-icons/fa";
 import EditGroup from "./EditGroup";
 import { MdDelete } from "react-icons/md";
+import { selectUserData } from "../../redux/reducers/authSlice";
 
 const GroupOverview = () => {
   const dispatch = useAppDispatch();
   const group = useAppSelector(selectSpecificGroupInfo);
+  const user = useAppSelector(selectUserData);
+
   const [openGroup, setOpenGroup] = useState<Boolean>(false);
 
   const groupID = JSON.parse(localStorage.getItem("selectedGroupID") || "null");
+
+  const userId = user?.data?.id;
+  const memberDetails = group?.data?.memberDetails;
+  const userMember = memberDetails?.find(
+    (member) => member.userID === Number(userId)
+  );
+  const isUserAdmin = Boolean(userMember?.isAdmin);
 
   useEffect(() => {
     if (groupID) {
@@ -80,18 +90,33 @@ const GroupOverview = () => {
           </Typography>
         </Box>
       </Box>
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 4, mt: 4 }}>
-        <IconButton
-          color="success"
-          size="large"
-          onClick={() => setOpenGroup(true)}
-        >
-          <FaEdit size="2.4rem" />
-        </IconButton>
-        <IconButton color="error" size="large" onClick={deleteHandler}>
-          <MdDelete size="2.4rem" />
-        </IconButton>
-      </Box>
+      {isUserAdmin ? (
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 4, mt: 4 }}>
+          <IconButton
+            color="success"
+            size="large"
+            onClick={() => setOpenGroup(true)}
+          >
+            <FaEdit size="2.4rem" />
+          </IconButton>
+          <IconButton color="error" size="large" onClick={deleteHandler}>
+            <MdDelete size="2.4rem" />
+          </IconButton>
+        </Box>
+      ) : (
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 4, mt: 4 }}>
+          <Tooltip title="Only admin can edit" placement="top">
+            <IconButton size="large">
+              <FaEdit size="2.4rem" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Only admin can delete" placement="top">
+            <IconButton size="large">
+              <MdDelete size="2.4rem" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
 
       <EditGroup
         openGroup={openGroup}

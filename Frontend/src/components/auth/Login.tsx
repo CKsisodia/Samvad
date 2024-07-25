@@ -41,7 +41,6 @@ const Login = () => {
     await dispatch(getUserInfoAction());
 
     const status = response?.type?.split("/")[1];
-    console.log(status, "okok");
     if (status === "fulfilled") {
       navigate("/");
     }

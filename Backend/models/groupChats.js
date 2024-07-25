@@ -20,6 +20,15 @@ const GroupChats = sequelize.define(
         key: "id",
       },
     },
+    senderName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    nameColor: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "#e534eb",
+    },
     groupID: {
       type: DataTypes.INTEGER,
       allowNull: false,

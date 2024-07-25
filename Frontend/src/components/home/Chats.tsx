@@ -25,6 +25,10 @@ import {
   sendMessageAction,
 } from "../../redux/actions/asyncChatActions";
 import { getUserInfoAction } from "../../redux/actions/asyncAuthActions";
+import { io } from "socket.io-client";
+import socket from "../../utils/socket";
+import { selectUserData } from "../../redux/reducers/authSlice";
+import { toast } from "react-toastify";
 
 const ChatContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -49,8 +53,8 @@ const MessagesContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "#e5ddd5",
   display: "flex",
   flexDirection: "column",
-   // Custom scrollbar styles
-   "&::-webkit-scrollbar": {
+  // Custom scrollbar styles
+  "&::-webkit-scrollbar": {
     width: "4px",
   },
   "&::-webkit-scrollbar-thumb": {
@@ -85,6 +89,9 @@ const Chats = () => {
   const contactID =
     useAppSelector(selectedContactId) ||
     JSON.parse(localStorage.getItem("selectedContact") || "null");
+  const user = useAppSelector(selectUserData);
+  const userId = user?.data?.id;
+  const roomID = "private_room_" + [userId, contactID].sort().join("_");
 
   const [input, setInput] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -103,28 +110,46 @@ const Chats = () => {
   };
 
   useEffect(() => {
+    dispatch(getAllMessageAction(contactID));
+  }, [contactID]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [chatsData?.data]);
 
   useEffect(() => {
-    const fetchMessages = () => {
+    dispatch(getUserInfoAction());
+
+    if (roomID) {
+      console.log("user joined room", roomID);
+      socket.emit("join_room", roomID);
+    }
+
+    socket.on("receive_private_message", (data) => {
+      console.log(data);
       dispatch(getAllMessageAction(contactID));
-      dispatch(getUserInfoAction());
+    });
 
+    return () => {
+      console.log("room left by", roomID);
+      socket.emit("leave_room", roomID);
+      socket.off("receive_private_message");
     };
-    fetchMessages();
-
-    // const intervalId = setInterval(fetchMessages, 1000);
-    // return () => clearInterval(intervalId);
-  }, [contactID, dispatch]);
+  }, [contactID]);
 
   const handleSend = () => {
+    if(input === ""){
+      return toast.error("Please type a message")
+    }
     const sendData = {
-      message: input,
+      roomID: roomID,
+      senderID: userId,
       receiverID: contactID,
+      message: input,
     };
-    dispatch(sendMessageAction(sendData));
-    dispatch(getUserInfoAction());
+    socket.emit("private_message", sendData);
+    // dispatch(sendMessageAction(sendData));
+    // dispatch(getUserInfoAction());
     setInput("");
   };
 

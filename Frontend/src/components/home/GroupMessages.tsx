@@ -23,6 +23,8 @@ import {
   sendGroupMessageAction,
 } from "../../redux/actions/asyncChatActions";
 import { selectUserData } from "../../redux/reducers/authSlice";
+import socket from "../../utils/socket";
+import { toast } from "react-toastify";
 
 const ChatContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -61,10 +63,6 @@ const MessageBubble = styled(Paper)(({ theme }) => ({
   borderRadius: "8px",
   wordWrap: "break-word",
   display: "inline-block",
-  "&.own": {
-    alignSelf: "flex-end",
-    backgroundColor: "#dcf8c6",
-  },
 }));
 
 const GroupMessages = () => {
@@ -76,6 +74,11 @@ const GroupMessages = () => {
   const groupID =
     useAppSelector(selectedGroupID) ||
     JSON.parse(localStorage.getItem("selectedGroupID") || "null");
+  const senderID = user?.data?.id;
+  const senderName = user?.data?.name;
+  const roomID = `group_room_${groupID}`;
+
+  console.log(groupMessages);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -91,40 +94,72 @@ const GroupMessages = () => {
   }, [groupMessages]);
 
   useEffect(() => {
-    const fetchMessages = () => {
-      dispatch(getGroupMessageAction(groupID));
-    };
-    fetchMessages();
-
-    // const intervalId = setInterval(fetchMessages, 1000);
-    // return () => clearInterval(intervalId);
+    dispatch(getGroupMessageAction(groupID));
   }, [groupID, dispatch]);
 
+  useEffect(() => {
+    if (roomID) {
+      console.log("user joined room", roomID);
+      socket.emit("join_room", roomID);
+    }
+
+    socket.on("receive_group_message", (data) => {
+      dispatch(getGroupMessageAction(groupID));
+    });
+
+    return () => {
+      console.log("room left by", roomID);
+      socket.emit("leave_room", roomID);
+      socket.off("receive_group_message");
+    };
+  }, [groupID]);
+
   const handleSend = () => {
-    dispatch(sendGroupMessageAction({ groupID: groupID, message: input }));
+    if (input === "") {
+      return toast.error("Please type a message");
+    }
+    const sendData = {
+      roomID: roomID,
+      senderID: senderID,
+      groupID: groupID,
+      message: input,
+      senderName: senderName,
+    };
+    socket.emit("group_message", sendData);
+    // dispatch(sendGroupMessageAction({ groupID: groupID, message: input }));
     setInput("");
   };
 
   return (
     <ChatContainer>
       <MessagesContainer>
-        {groupMessages?.data?.map((row) => (
-          <MessageBubble
-            key={row?.id}
-            style={{
-              alignSelf:
-                user?.data && row?.senderID === +user?.data?.id
-                  ? "flex-end"
-                  : "flex-start",
-              backgroundColor:
-                user?.data && row?.senderID === +user?.data?.id
-                  ? "#dcf8c6"
-                  : "#fff",
-            }}
-          >
-            <Typography>{row?.message}</Typography>
-          </MessageBubble>
-        ))}
+        {groupMessages?.data?.map((row, index) => {
+          const isOwnMessage = user?.data && row?.senderID === +user?.data?.id;
+          const messageStyle = {
+            alignSelf: isOwnMessage ? "flex-end" : "flex-start",
+            backgroundColor: isOwnMessage ? "#dcf8c6" : "#fff",
+          };
+          const showSenderName =
+            index === 0 ||
+            row?.senderName !== groupMessages?.data[index - 1]?.senderName;
+
+          return (
+            <MessageBubble key={row?.id} style={messageStyle}>
+              {!isOwnMessage && showSenderName && (
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: row?.nameColor,
+                  }}
+                >
+                  {row?.senderName}
+                </Typography>
+              )}
+              <Typography>{row?.message}</Typography>
+            </MessageBubble>
+          );
+        })}
         <div ref={messagesEndRef} />
       </MessagesContainer>
       <OutlinedInput

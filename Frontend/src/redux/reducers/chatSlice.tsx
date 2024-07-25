@@ -27,6 +27,7 @@ interface chatDataState {
   specificGroupInfo: SpecificGroupInfoResponse | null;
   conversation: string;
   groupChats: GroupMessagesResponse | null;
+  
 }
 
 const initialState: chatDataState = {

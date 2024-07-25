@@ -103,6 +103,8 @@ export type GroupMessagesResponse = {
     senderID: number;
     groupID: number;
     message: string;
+    senderName: string;
+    nameColor: string;
     createdAt: string;
     updatedAt: string;
   }[];

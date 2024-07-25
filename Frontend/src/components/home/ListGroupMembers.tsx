@@ -19,10 +19,20 @@ import {
 import { selectSpecificGroupInfo } from "../../redux/reducers/chatSlice";
 import { RiAdminFill, RiAdminLine } from "react-icons/ri";
 import { HiUserRemove } from "react-icons/hi";
+import { selectUserData } from "../../redux/reducers/authSlice";
+import { MdDoNotDisturb } from "react-icons/md";
 
 const ListGroupMembers = () => {
   const dispatch = useAppDispatch();
   const membersData = useAppSelector(selectSpecificGroupInfo);
+  const user = useAppSelector(selectUserData);
+
+  const userId = user?.data?.id;
+  const memberDetails = membersData?.data?.memberDetails;
+  const userMember = memberDetails?.find(
+    (member) => member.userID === Number(userId)
+  );
+  const isUserAdmin = Boolean(userMember?.isAdmin);
 
   useEffect(() => {
     const groupID = JSON.parse(
@@ -83,34 +93,42 @@ const ListGroupMembers = () => {
                 {member?.isAdmin ? "✅" : "❌"}
               </TableCell>
               <TableCell align="center">
-                {member?.isAdmin ? (
-                  <IconButton
-                    onClick={() =>
-                      adminStatusHandler({
-                        groupID: member?.groupID,
-                        userID: member?.userID,
-                        isAdmin: false,
-                      })
-                    }
-                  >
-                    <RiAdminFill size="1.4rem" />
-                  </IconButton>
+                {isUserAdmin ? (
+                  member?.isAdmin ? (
+                    <IconButton
+                      onClick={() =>
+                        adminStatusHandler({
+                          groupID: member?.groupID,
+                          userID: member?.userID,
+                          isAdmin: false,
+                        })
+                      }
+                    >
+                      <RiAdminFill size="1.4rem" />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() =>
+                        adminStatusHandler({
+                          groupID: member?.groupID,
+                          userID: member?.userID,
+                          isAdmin: true,
+                        })
+                      }
+                    >
+                      <RiAdminLine />
+                    </IconButton>
+                  )
                 ) : (
-                  <IconButton
-                    onClick={() =>
-                      adminStatusHandler({
-                        groupID: member?.groupID,
-                        userID: member?.userID,
-                        isAdmin: true,
-                      })
-                    }
-                  >
-                    <RiAdminLine />
-                  </IconButton>
+                  <Tooltip title="Only admin" placement="top">
+                    <IconButton size="small">
+                      <MdDoNotDisturb size="1.4rem" />
+                    </IconButton>
+                  </Tooltip>
                 )}
               </TableCell>
               <TableCell align="center">
-                {true ? (
+                {isUserAdmin ? (
                   <IconButton
                     color="error"
                     onClick={() =>
@@ -124,8 +142,8 @@ const ListGroupMembers = () => {
                   </IconButton>
                 ) : (
                   <Tooltip title="Only admin" placement="top">
-                    <IconButton size="small" color="error">
-                      🚫
+                    <IconButton size="small">
+                    <MdDoNotDisturb size="1.4rem" />
                     </IconButton>
                   </Tooltip>
                 )}

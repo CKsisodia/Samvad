@@ -20,7 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { ChangeEvent, FormEvent, SyntheticEvent, useState } from "react";
+import { ChangeEvent, FormEvent, SyntheticEvent, useEffect, useState } from "react";
 import { FaMobileScreenButton } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { addContact } from "../../types/user";
@@ -29,13 +29,17 @@ import {
   addContactAction,
   addGroupMemberAction,
   findContactAction,
+  getSpecificGroupInfoAction,
 } from "../../redux/actions/asyncChatActions";
 import {
   resetSpecificContact,
   selectedGroupID,
   selectSpecificContact,
+  selectSpecificGroupInfo,
 } from "../../redux/reducers/chatSlice";
 import { avtarNameHandler } from "../../utils/helperFunctions";
+import { selectUserData } from "../../redux/reducers/authSlice";
+import { getUserInfoAction } from "../../redux/actions/asyncAuthActions";
 
 const IOSSwitch = styled((props: SwitchProps) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -113,6 +117,16 @@ const AddGroupMember = () => {
     useAppSelector(selectedGroupID) ||
     JSON.parse(localStorage.getItem("selectedGroupID") || "null");
 
+  const membersData = useAppSelector(selectSpecificGroupInfo);
+  const user = useAppSelector(selectUserData);
+
+  const userId = user?.data?.id;
+  const memberDetails = membersData?.data?.memberDetails;
+  const userMember = memberDetails?.find(
+    (member) => member.userID === Number(userId)
+  );
+  const isUserAdmin = Boolean(userMember?.isAdmin);
+
   const [handleData, setHandleData] = useState<addContact>({
     email: "",
     mobile: "",
@@ -129,6 +143,11 @@ const AddGroupMember = () => {
     e.preventDefault();
     await dispatch(findContactAction(handleData));
   };
+
+  useEffect(() => {
+    dispatch(getUserInfoAction())
+    dispatch(getSpecificGroupInfoAction(groupID))
+  },[])
 
   const handleAddMember = async (userID: number) => {
     const body = {
@@ -148,96 +167,114 @@ const AddGroupMember = () => {
   };
 
   return (
-    <Box sx={{ width: "70%", margin: "0px auto" }}>
-      <Typography sx={{ m: 0, p: 2, textAlign: "center" }} variant="h5">
-        Search Member
-      </Typography>
+    <>
+      {isUserAdmin ? (
+        <Box sx={{ width: "70%", margin: "0px auto" }}>
+          <Typography sx={{ m: 0, p: 2, textAlign: "center" }} variant="h5">
+            Search Member
+          </Typography>
 
-      <Box component="form" noValidate onSubmit={handleSubmit}>
-        <Typography variant="body1">Email</Typography>
-        <OutlinedInput
-          id="email"
-          name="email"
-          fullWidth
-          onChange={handleChange}
-          startAdornment={
-            <InputAdornment position="start">
-              <MdEmail size="1.2rem" />
-            </InputAdornment>
-          }
-          sx={{ mb: 2 }}
-        />
-        <Typography variant="body1" textAlign="center">
-          OR
-        </Typography>
-        <Typography variant="body1">Mobile</Typography>
-        <OutlinedInput
-          id="mobile"
-          name="mobile"
-          fullWidth
-          onChange={handleChange}
-          startAdornment={
-            <InputAdornment position="start">
-              <FaMobileScreenButton size="1.2rem" />
-            </InputAdornment>
-          }
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 2, mb: 1 }}
-        >
-          Search
-        </Button>
-      </Box>
-
-      {specificContactData?.status && (
-        <Item
-          sx={{
-            my: 4,
-            display: "flex",
-            color: "#000",
-            justifyContent: "space-between",
-          }}
-        >
-          <Stack spacing={2} direction="row" alignItems="center">
-            <Avatar>{avtarNameHandler(specificContactData?.data?.name)}</Avatar>
-            <Typography noWrap>{specificContactData?.data?.name}</Typography>
-            <Typography noWrap>{specificContactData?.data?.email}</Typography>
-            <Typography noWrap>{specificContactData?.data?.mobile}</Typography>
-          </Stack>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} />}
-              label="Make admin"
-              labelPlacement="start"
-              checked={isAdmin}
-              onChange={(e: SyntheticEvent, checked: boolean) =>
-                setIsAdmin(checked)
+          <Box component="form" noValidate onSubmit={handleSubmit}>
+            <Typography variant="body1">Email</Typography>
+            <OutlinedInput
+              id="email"
+              name="email"
+              fullWidth
+              onChange={handleChange}
+              startAdornment={
+                <InputAdornment position="start">
+                  <MdEmail size="1.2rem" />
+                </InputAdornment>
+              }
+              sx={{ mb: 2 }}
+            />
+            <Typography variant="body1" textAlign="center">
+              OR
+            </Typography>
+            <Typography variant="body1">Mobile</Typography>
+            <OutlinedInput
+              id="mobile"
+              name="mobile"
+              fullWidth
+              onChange={handleChange}
+              startAdornment={
+                <InputAdornment position="start">
+                  <FaMobileScreenButton size="1.2rem" />
+                </InputAdornment>
               }
             />
             <Button
-              size="small"
+              type="submit"
+              fullWidth
               variant="contained"
-              color="success"
-              onClick={() => {
-                handleAddMember(specificContactData?.data?.contactUserId);
-              }}
+              sx={{ mt: 2, mb: 1 }}
             >
-              Add
+              Search
             </Button>
           </Box>
-        </Item>
+
+          {specificContactData?.status && (
+            <Item
+              sx={{
+                my: 4,
+                display: "flex",
+                color: "#000",
+                justifyContent: "space-between",
+              }}
+            >
+              <Stack spacing={2} direction="row" alignItems="center">
+                <Avatar>
+                  {avtarNameHandler(specificContactData?.data?.name)}
+                </Avatar>
+                <Typography noWrap>
+                  {specificContactData?.data?.name}
+                </Typography>
+                <Typography noWrap>
+                  {specificContactData?.data?.email}
+                </Typography>
+                <Typography noWrap>
+                  {specificContactData?.data?.mobile}
+                </Typography>
+              </Stack>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  gap: 2,
+                }}
+              >
+                <FormControlLabel
+                  control={<IOSSwitch sx={{ m: 1 }} />}
+                  label="Make admin"
+                  labelPlacement="start"
+                  checked={isAdmin}
+                  onChange={(e: SyntheticEvent, checked: boolean) =>
+                    setIsAdmin(checked)
+                  }
+                />
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="success"
+                  onClick={() => {
+                    handleAddMember(specificContactData?.data?.contactUserId);
+                  }}
+                >
+                  Add
+                </Button>
+              </Box>
+            </Item>
+          )}
+        </Box>
+      ) : (
+        <div style={{ textAlign: "center", padding: "24%" }}>
+          <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+          Only admin can add a new member in group.
+          </div>
+        </div>
       )}
-    </Box>
+    </>
   );
 };
 

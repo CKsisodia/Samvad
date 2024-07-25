@@ -4,35 +4,6 @@ const Chats = require("../models/chats");
 const Users = require("../models/users");
 const { Op } = require("sequelize");
 
-exports.deliverChats = async (req, res) => {
-  try {
-    const { receiverID } = req.params;
-    const { message } = req.body;
-    const { id: senderID } = req.user;
-
-    if (!receiverID || !message) {
-      return res.status(400).json(new ApiError("Type your message...."));
-    }
-
-    const receiver = await Users.findByPk(receiverID);
-    if (!receiver) {
-      return res.status(404).json(new ApiError("Receiver not found"));
-    }
-
-    const newChat = await Chats.create({
-      senderID,
-      receiverID,
-      message,
-    });
-
-    return res
-      .status(201)
-      .json(new ApiResponse("Message delivered successfully", newChat));
-  } catch (error) {
-    return res.status(500).json(new ApiError("Something went wrong"));
-  }
-};
-
 exports.getAllChats = async (req, res) => {
   try {
     const { receiverID } = req.params;

@@ -58,7 +58,7 @@ const MessagesContainer = styled(Box)(({ theme }) => ({
 
 const MessageBubble = styled(Paper)(({ theme }) => ({
   maxWidth: "60%",
-  marginBottom: theme.spacing(2),
+  marginBottom: theme.spacing(0.5),
   padding: theme.spacing(1),
   borderRadius: "8px",
   wordWrap: "break-word",

@@ -107,6 +107,9 @@ export type GroupMessagesResponse = {
     groupID: number;
     message: string;
     senderName: string;
+    type: string;
+    size:string;
+    url:string;
     nameColor: string;
     createdAt: string;
     updatedAt: string;

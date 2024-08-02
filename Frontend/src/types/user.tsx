@@ -75,6 +75,9 @@ export type ChatMessage = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  size: string;
+  type: string;
+  url: string;
 };
 
 export type ChatResponse = {

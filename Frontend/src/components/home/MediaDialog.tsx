@@ -46,7 +46,7 @@ const MediaDialog = ({ open, handleClose, dialogContent }: any) => {
           <img
             src={dialogContent?.url}
             alt="try again"
-            style={{ maxWidth: "100%" }}
+            style={{  width: "100%" , height:'100%'}}
           />
         )}
 

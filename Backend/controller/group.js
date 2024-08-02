@@ -1,5 +1,6 @@
 const Group = require("../models/group");
 const GroupChats = require("../models/groupChats");
+const GroupMedia = require("../models/groupMedia");
 const GroupMember = require("../models/groupMember");
 const Users = require("../models/users");
 const ApiError = require("../utils/ApiError");
@@ -262,9 +263,20 @@ exports.getAllGroupMessage = async (req, res) => {
       order: [["createdAt", "ASC"]],
     });
 
+    const media = await GroupMedia.findAll({
+      where: {
+        groupID,
+      },
+      order: [["createdAt", "ASC"]],
+    });
+
+    const groupData = [...messages, ...media].sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    );
+
     return res
       .status(200)
-      .json(new ApiResponse("Messages retrieved successfully", messages));
+      .json(new ApiResponse("Messages retrieved successfully", groupData));
   } catch (error) {
     return res.status(500).json(new ApiError("Something went wrong"));
   }

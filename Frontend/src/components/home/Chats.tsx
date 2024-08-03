@@ -308,7 +308,7 @@ const Chats = () => {
             {chatsData?.data?.map((message) => (
               <MessageBubble
                 key={message?.id}
-                className={message?.type ? "media" : ""}
+                className={message?.status === "media" ? "media" : ""}
                 style={{
                   alignSelf:
                     message?.receiverID === contactID
@@ -318,8 +318,11 @@ const Chats = () => {
                     message?.receiverID === contactID ? "#dcf8c6" : "#fff",
                 }}
               >
-                <Typography>{message?.message}</Typography>
-                {message?.url && renderMedia(message?.type, message?.url)}
+                {message?.status === "text" && (
+                  <Typography>{message?.message}</Typography>
+                )}
+                {message?.status === "media" &&
+                  renderMedia(message?.type, message?.url)}
               </MessageBubble>
             ))}
             <div ref={messagesEndRef} />

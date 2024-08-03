@@ -8,9 +8,12 @@ const chatRoutes = require("./routes/chats");
 const groupRoutes = require("./routes/group");
 const http = require("http");
 const { Server } = require("socket.io");
+const { CronJob } = require("cron");
 const connectionHandler = require("./web_sockets/connectionHandler");
 const privateMessageHandler = require("./web_sockets/privateChatHandler");
 const groupChatHandler = require("./web_sockets/groupChatHandler");
+const { archivedChats } = require("./cron_job/archivedChats");
+const { archivedGroupChats } = require("./cron_job/archivedGroupChats");
 
 const app = express();
 const server = http.createServer(app);
@@ -51,6 +54,17 @@ app.options(
     optionsSuccessStatus: 200,
     credentials: true,
   })
+);
+
+const job = new CronJob(
+  "0 0 * * * *",
+  async () => {
+    await archivedChats();
+    await archivedGroupChats();
+  },
+  null,
+  true,
+  "Asia/Kolkata"
 );
 
 app.use("/auth", authRoutes);

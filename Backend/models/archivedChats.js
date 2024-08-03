@@ -1,10 +1,9 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../db/database");
-const Chats = require("./chats");
 const Users = require("./users");
 
-const ChatMedia = sequelize.define(
-  "chatmedia",
+const ArchivedChats = sequelize.define(
+  "archivedchats",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -28,15 +27,23 @@ const ChatMedia = sequelize.define(
         key: "id",
       },
     },
+    message: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     size: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    status: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -46,11 +53,10 @@ const ChatMedia = sequelize.define(
   }
 );
 
-Users.hasMany(ChatMedia, { foreignKey: "senderID" });
-ChatMedia.belongsTo(Users, { foreignKey: "senderID", as: "Sender" });
+Users.hasMany(ArchivedChats, { foreignKey: "senderID" });
+ArchivedChats.belongsTo(Users, { foreignKey: "senderID", as: "Sender" });
 
-Users.hasMany(ChatMedia, { foreignKey: "receiverID" });
-ChatMedia.belongsTo(Users, { foreignKey: "receiverID", as: "Receiver" });
+Users.hasMany(ArchivedChats, { foreignKey: "receiverID" });
+ArchivedChats.belongsTo(Users, { foreignKey: "receiverID", as: "Receiver" });
 
-
-module.exports = ChatMedia;
+module.exports = ArchivedChats;

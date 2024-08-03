@@ -1,6 +1,5 @@
 const Group = require("../models/group");
 const GroupChats = require("../models/groupChats");
-const GroupMedia = require("../models/groupMedia");
 const GroupMember = require("../models/groupMember");
 const Users = require("../models/users");
 const ApiError = require("../utils/ApiError");
@@ -256,23 +255,12 @@ exports.getAllGroupMessage = async (req, res) => {
       return res.status(400).json(new ApiError("can't fetch messages"));
     }
 
-    const messages = await GroupChats.findAll({
+    const groupData = await GroupChats.findAll({
       where: {
         groupID,
       },
       order: [["createdAt", "ASC"]],
     });
-
-    const media = await GroupMedia.findAll({
-      where: {
-        groupID,
-      },
-      order: [["createdAt", "ASC"]],
-    });
-
-    const groupData = [...messages, ...media].sort(
-      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-    );
 
     return res
       .status(200)

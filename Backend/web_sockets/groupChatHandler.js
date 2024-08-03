@@ -1,10 +1,9 @@
 const GroupChats = require("../models/groupChats");
-const GroupMedia = require("../models/groupMedia");
 
 module.exports = function groupMessageHandler(socket, io) {
   socket.on("group_message", async (groupMessageData) => {
     try {
-      const { roomID, senderID, groupID, senderName ,message , fileMetaData } =
+      const { roomID, senderID, groupID, senderName, message, fileMetaData } =
         groupMessageData;
 
       const getRandomDarkColor = () => {
@@ -24,7 +23,6 @@ module.exports = function groupMessageHandler(socket, io) {
       };
 
       let chat = null;
-      let media = null;
 
       let existingChat = await GroupChats.findOne({
         where: { senderID, groupID },
@@ -39,19 +37,20 @@ module.exports = function groupMessageHandler(socket, io) {
         nameColor = getRandomDarkColor();
       }
 
-      if(message) {
+      if (message) {
         chat = await GroupChats.create({
           senderID,
           groupID,
           message,
           senderName,
           nameColor,
+          status: "text",
         });
       }
 
-      if(fileMetaData){
-        const {size , type, url} = fileMetaData;
-        media = await GroupMedia.create({
+      if (fileMetaData) {
+        const { size, type, url } = fileMetaData;
+        chat = await GroupChats.create({
           senderID,
           groupID,
           senderName,
@@ -59,23 +58,13 @@ module.exports = function groupMessageHandler(socket, io) {
           size,
           type,
           url,
+          status: "media",
         });
       }
 
       if (chat) {
-        io.to(roomID).emit("receive_group_message", {
-          type: "chat",
-          data: chat,
-        });
+        io.to(roomID).emit("receive_group_message", chat);
       }
-
-      if (media) {
-        io.to(roomID).emit("receive_group_message", {
-          type: "media",
-          data: media,
-        });
-      }
-
     } catch (err) {
       console.error("Error sending group message:", err);
     }

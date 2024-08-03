@@ -4,7 +4,7 @@ const Chats = require("../models/chats");
 const Users = require("../models/users");
 const { Op } = require("sequelize");
 const { generatePresignedUrl } = require("../services/generatePresignedUrl");
-const ChatMedia = require("../models/chatMedia");
+const ArchivedChats = require("../models/archivedChats");
 
 exports.getAllChats = async (req, res) => {
   try {
@@ -21,7 +21,16 @@ exports.getAllChats = async (req, res) => {
       return res.status(404).json(new ApiError("Receiver not found"));
     }
 
-    const messages = await Chats.findAll({
+    const chatData = await Chats.findAll({
+      where: {
+        [Op.or]: [
+          { senderID, receiverID },
+          { senderID: receiverID, receiverID: senderID },
+        ],
+      },
+      order: [["createdAt", "ASC"]],
+    });
+    const archivedChatData = await ArchivedChats.findAll({
       where: {
         [Op.or]: [
           { senderID, receiverID },
@@ -31,23 +40,13 @@ exports.getAllChats = async (req, res) => {
       order: [["createdAt", "ASC"]],
     });
 
-    const media = await ChatMedia.findAll({
-      where: {
-        [Op.or]: [
-          { senderID, receiverID },
-          { senderID: receiverID, receiverID: senderID },
-        ],
-      },
-      order: [["createdAt", "ASC"]],
+    const combinedChat = [...chatData, ...archivedChatData].sort((a, b) => {
+      return new Date(a.createdAt) - new Date(b.createdAt);
     });
-
-    const chatData = [...messages, ...media].sort(
-      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-    );
 
     return res
       .status(200)
-      .json(new ApiResponse("Chat retrieved successfully", chatData));
+      .json(new ApiResponse("Chat retrieved successfully", combinedChat));
   } catch (error) {
     return res.status(500).json(new ApiError("Something went wrong"));
   }

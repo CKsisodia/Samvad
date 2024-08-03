@@ -124,7 +124,14 @@ const AddContact = ({ openAddContact, handleCloseAddContact }: any) => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 2, mb: 1 }}
+              sx={{
+                mt: 2, mb: 1,
+                backgroundColor: "#86C232",
+                color: "#0A0A0A",
+                "&:hover": {
+                  backgroundColor: "#61892F",
+                },
+              }}
             >
               Search
             </Button>
@@ -160,7 +167,13 @@ const AddContact = ({ openAddContact, handleCloseAddContact }: any) => {
                 <Button
                   size="small"
                   variant="contained"
-                  color="success"
+                  sx={{
+                    backgroundColor: "#86C232",
+                    color: "#0A0A0A",
+                    "&:hover": {
+                      backgroundColor: "#61892F",
+                    },
+                  }}
                   onClick={() => {
                     handleAddContact(specificContactData?.data?.contactUserId);
                     handleCloseAddContact();

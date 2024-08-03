@@ -25,7 +25,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-
 const EditGroup = ({ openGroup, handleCloseGroup, groupID }: any) => {
   const dispatch = useAppDispatch();
 
@@ -93,7 +92,15 @@ const EditGroup = ({ openGroup, handleCloseGroup, groupID }: any) => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 2, mb: 1 }}
+              sx={{
+                mt: 2,
+                mb: 1,
+                backgroundColor: "#86C232",
+                color: "#0A0A0A",
+                "&:hover": {
+                  backgroundColor: "#61892F",
+                },
+              }}
             >
               Update
             </Button>

@@ -72,33 +72,35 @@ const SideBar = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Box sx={{ display: "flex", m: 1, gap: 1, justifyContent:'space-between' }}>
+      <Box
+        sx={{ display: "flex", m: 1, gap: 1, justifyContent: "space-between" }}
+      >
         <Button
-          variant={conversation === "contact" ? "contained" : "outlined"}
           startIcon={<FaUser size="1rem" />}
           onClick={() => dispatch(selectContactOrGroup("contact"))}
+          sx={{
+            backgroundColor: conversation === "contact" ? "#61892F" : "#86C232",
+            color: "#0A0A0A",
+            "&:hover": {
+              backgroundColor: "#61892F",
+            },
+          }}
         >
           Contacts
         </Button>
         <Button
-          variant={conversation === "group" ? "contained" : "outlined"}
           startIcon={<FaUserGroup size="1.3rem" />}
           onClick={() => dispatch(selectContactOrGroup("group"))}
+          sx={{
+            backgroundColor: conversation === "group" ? "#61892F" : "#86C232",
+            color: "#0A0A0A",
+            "&:hover": {
+              backgroundColor: "#61892F",
+            },
+          }}
         >
           Groups
         </Button>
-      </Box>
-
-      <Box sx={{ display: "flex", justifyContent: "center" , p:1 }}>
-        <OutlinedInput
-          startAdornment={
-            <InputAdornment position="start">
-              <IoSearchSharp />
-            </InputAdornment>
-          }
-          size="small"
-          fullWidth
-        />
       </Box>
 
       {conversation === "contact" && (
@@ -108,7 +110,7 @@ const SideBar = () => {
             color="success"
             onClick={() => setOpenAddContact(true)}
           >
-            <FaUserPlus size="2rem" />
+            <FaUserPlus size="2rem" color="#86C232"/>
           </IconButton>
           {contactsData?.data?.map((contact) => (
             <Paper
@@ -148,9 +150,9 @@ const SideBar = () => {
             color="success"
             onClick={() => setOpenGroup(true)}
           >
-            <MdGroupAdd size="2.2rem" />
+            <MdGroupAdd size="2.2rem" color="#86C232"/>
           </IconButton>
-          {groupData?.data?.map((group:any, index) => (
+          {groupData?.data?.map((group: any, index) => (
             <Paper
               key={index}
               sx={{

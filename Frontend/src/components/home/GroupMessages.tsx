@@ -41,8 +41,8 @@ const MessagesContainer = styled(Box)(({ theme }) => ({
   flex: 1,
   overflowY: "auto",
   padding: theme.spacing(2),
-  backgroundColor: "#e5ddd5",
-  display: "flex",
+  backgroundImage: "url('/chat.png')",
+    display: "flex",
   flexDirection: "column",
   // Custom scrollbar styles
   "&::-webkit-scrollbar": {

@@ -45,8 +45,8 @@ const Header = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(2),
-  backgroundColor: "#00796b",
-  color: "#fff",
+  backgroundColor: "#86C232",
+  color: "#0A0A0A",
   justifyContent: "space-between",
 }));
 
@@ -54,7 +54,7 @@ const MessagesContainer = styled(Box)(({ theme }) => ({
   flex: 1,
   overflowY: "auto",
   padding: theme.spacing(2),
-  backgroundColor: "#e5ddd5",
+  backgroundImage: "url('/chat.png')",
   display: "flex",
   flexDirection: "column",
   // Custom scrollbar styles
@@ -283,7 +283,13 @@ const Chats = () => {
         <ChatContainer>
           <Header>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar sx={{ marginRight: 2 }}>
+              <Avatar
+                sx={{
+                  marginRight: 2,
+                  backgroundColor: "#61892F",
+                  color: "#0A0A0A",
+                }}
+              >
                 {avtarNameHandler(filterContact?.[0]?.contactUser?.name)}
               </Avatar>
               <Typography variant="h6">
@@ -291,18 +297,24 @@ const Chats = () => {
               </Typography>
             </Box>
 
-            <ButtonGroup
-              disableElevation
-              variant="contained"
-              aria-label="Disabled button group"
-            >
-              <Button>
+            <Box sx={{ display: "flex" , gap:1}}>
+              <Button
+                sx={{
+                  backgroundColor: "#61892F",
+                  color: "#0A0A0A",
+                }}
+              >
                 <VideocamIcon />
               </Button>
-              <Button>
+              <Button
+                sx={{
+                  backgroundColor: "#61892F",
+                  color: "#0A0A0A",
+                }}
+              >
                 <CallIcon />
               </Button>
-            </ButtonGroup>
+            </Box>
           </Header>
           <MessagesContainer>
             {chatsData?.data?.map((message) => (

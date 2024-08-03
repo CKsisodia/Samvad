@@ -20,7 +20,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { ChangeEvent, FormEvent, SyntheticEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from "react";
 import { FaMobileScreenButton } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { addContact } from "../../types/user";
@@ -145,9 +151,9 @@ const AddGroupMember = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserInfoAction())
-    dispatch(getSpecificGroupInfoAction(groupID))
-  },[])
+    dispatch(getUserInfoAction());
+    dispatch(getSpecificGroupInfoAction(groupID));
+  }, []);
 
   const handleAddMember = async (userID: number) => {
     const body = {
@@ -207,7 +213,15 @@ const AddGroupMember = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 2, mb: 1 }}
+              sx={{
+                mt: 2,
+                mb: 1,
+                backgroundColor: "#86C232",
+                color: "#0A0A0A",
+                "&:hover": {
+                  backgroundColor: "#61892F",
+                },
+              }}
             >
               Search
             </Button>
@@ -256,7 +270,13 @@ const AddGroupMember = () => {
                 <Button
                   size="small"
                   variant="contained"
-                  color="success"
+                  sx={{
+                    backgroundColor: "#86C232",
+                    color: "#0A0A0A",
+                    "&:hover": {
+                      backgroundColor: "#61892F",
+                    },
+                  }}
                   onClick={() => {
                     handleAddMember(specificContactData?.data?.contactUserId);
                   }}
@@ -270,7 +290,7 @@ const AddGroupMember = () => {
       ) : (
         <div style={{ textAlign: "center", padding: "24%" }}>
           <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-          Only admin can add a new member in group.
+            Only admin can add a new member in group.
           </div>
         </div>
       )}

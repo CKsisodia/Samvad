@@ -12,14 +12,16 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
+import { SiLiberadotchat } from "react-icons/si";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { logoutUser, selectUserData } from "../../redux/reducers/authSlice";
 import { toast } from "react-toastify";
+import { avtarNameHandler } from "../../utils/helperFunctions";
+import { useMediaQuery, useTheme } from "@mui/material";
 
-const pages = ["Home", "Chats", "Groups"];
 const NavBar = () => {
   const dispatch = useAppDispatch();
-  const userData = useAppSelector(selectUserData)
+  const userData = useAppSelector(selectUserData);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -47,71 +49,38 @@ const NavBar = () => {
     toast.success("You have logged out");
   };
 
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{backgroundColor: "#0A0A0A" , boxShadow:'none'}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Box sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}>
+            <SiLiberadotchat size="2.5rem" color="#86C232"/>
+          </Box>
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "inherit",
+              color: "#86C232",
               textDecoration: "none",
+              fontSize:'2rem'
             }}
           >
-            LOGO
+            Samvad
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+          <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
+            <SiLiberadotchat size="2.5rem" color="#86C232" />
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -119,28 +88,22 @@ const NavBar = () => {
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "inherit",
+              color : "#86C232",
               textDecoration: "none",
+              fontSize:'2rem'
             }}
           >
-            LOGO
+            Samvad
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-          <Typography sx={{mr:2}}>{userData?.data?.name}</Typography>
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Typography sx={{ mr: isSmallScreen ? 1 : 2  ,color: "#86C232"}}>{userData?.data?.name}</Typography>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="user" sx={{backgroundColor:'#61892F'}}>
+                  {avtarNameHandler(userData?.data?.name)}
+                </Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -159,16 +122,13 @@ const NavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">Profile</Typography>
-              </MenuItem>
               <MenuItem
                 onClick={() => {
                   handleCloseUserMenu();
                   logoutHandler();
                 }}
               >
-                <Typography textAlign="center">Logout</Typography>
+                <Typography textAlign="center" sx={{color:"#61892F" , fontWeight:700 , fontSize:'1rem'}}>Logout</Typography>
               </MenuItem>
             </Menu>
           </Box>

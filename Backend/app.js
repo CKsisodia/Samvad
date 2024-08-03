@@ -57,7 +57,7 @@ app.options(
 );
 
 const job = new CronJob(
-  "0 0 * * * *",
+  "0 0 3 * * *",
   async () => {
     await archivedChats();
     await archivedGroupChats();

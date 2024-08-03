@@ -87,7 +87,15 @@ const AddGroup = ({ openGroup, handleCloseGroup }: any) => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 2, mb: 1 }}
+              sx={{
+                mt: 2,
+                mb: 1,
+                backgroundColor: "#86C232",
+                color: "#0A0A0A",
+                "&:hover": {
+                  backgroundColor: "#61892F",
+                },
+              }}
             >
               Create
             </Button>

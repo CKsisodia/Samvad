@@ -65,17 +65,33 @@ const ListGroupMembers = () => {
     await dispatch(deleteGroupMemberAction({ groupID, userID }));
   };
 
+  const headerStyle = {
+    fontSize: "1rem",
+    fontWeight: 600,
+    color: "#0A0A0A",
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="center">Email</TableCell>
-            <TableCell align="center">Mobile</TableCell>
-            <TableCell align="center">Admin</TableCell>
-            <TableCell align="center">Make/Remove Admin</TableCell>
-            <TableCell align="center">Remove from group</TableCell>
+            <TableCell sx={headerStyle}>Name</TableCell>
+            <TableCell align="center" sx={headerStyle}>
+              Email
+            </TableCell>
+            <TableCell align="center" sx={headerStyle}>
+              Mobile
+            </TableCell>
+            <TableCell align="center" sx={headerStyle}>
+              Admin
+            </TableCell>
+            <TableCell align="center" sx={headerStyle}>
+              Make/Remove Admin
+            </TableCell>
+            <TableCell align="center" sx={headerStyle}>
+              Remove from group
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -143,7 +159,7 @@ const ListGroupMembers = () => {
                 ) : (
                   <Tooltip title="Only admin" placement="top">
                     <IconButton size="small">
-                    <MdDoNotDisturb size="1.4rem" />
+                      <MdDoNotDisturb size="1.4rem" />
                     </IconButton>
                   </Tooltip>
                 )}

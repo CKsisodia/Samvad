@@ -4,7 +4,10 @@ import React, { useState } from "react";
 import AddGroupMember from "./AddGroupMember";
 import ListGroupMembers from "./ListGroupMembers";
 import GroupOverview from "./GroupOverview";
-import PersonPinIcon from "@mui/icons-material/PersonPin";
+import SettingsIcon from '@mui/icons-material/Settings';
+import GroupsIcon from '@mui/icons-material/Groups';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ChatIcon from '@mui/icons-material/Chat';
 import GroupMessages from "./GroupMessages";
 
 const GroupTabs = () => {
@@ -21,30 +24,30 @@ const GroupTabs = () => {
           <TabList
             onChange={handleChange}
             aria-label="lab API tabs example"
-            // textColor="secondary"
-            // indicatorColor="secondary"
-            sx={{ backgroundColor: "#d2e5f7" }}
+            textColor="secondary"
+            indicatorColor="secondary"
+            sx={{ backgroundColor: "#86C232"}}
           >
             <Tab
-              icon={<PersonPinIcon />}
+              icon={<SettingsIcon />}
               iconPosition="start"
               label="Overview"
               value="1"
             />
             <Tab
-              icon={<PersonPinIcon />}
+              icon={<GroupsIcon sx={{fontSize:'2rem'}}/>}
               iconPosition="start"
               label="Members"
               value="2"
             />
             <Tab
-              icon={<PersonPinIcon />}
+              icon={<PersonAddIcon sx={{fontSize:'1.5rem'}}/>}
               iconPosition="start"
               label="Add New Member"
               value="3"
             />
             <Tab
-              icon={<PersonPinIcon />}
+              icon={<ChatIcon />}
               iconPosition="start"
               label="Chat"
               value="4"

@@ -78,6 +78,7 @@ export type ChatMessage = {
   size: string;
   type: string;
   url: string;
+  status: string;
 };
 
 export type ChatResponse = {
@@ -110,6 +111,7 @@ export type GroupMessagesResponse = {
     type: string;
     size:string;
     url:string;
+    status: string;
     nameColor: string;
     createdAt: string;
     updatedAt: string;

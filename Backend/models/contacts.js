@@ -30,7 +30,6 @@ const Contacts = sequelize.define(
   },
   {
     timestamps: true,
-    paranoid: true,
   }
 );
 

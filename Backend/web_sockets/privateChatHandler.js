@@ -1,4 +1,3 @@
-const ChatMedia = require("../models/chatMedia");
 const Chats = require("../models/chats");
 
 module.exports = function privateMessageHandler(socket, io) {
@@ -8,35 +7,30 @@ module.exports = function privateMessageHandler(socket, io) {
         privateMessageData;
 
       let chat = null;
-      let media = null;
 
       if (message) {
-        chat = await Chats.create({ senderID, receiverID, message });
+        chat = await Chats.create({
+          senderID,
+          receiverID,
+          message,
+          status: "text",
+        });
       }
 
       if (fileMetadata) {
         const { size, type, url } = fileMetadata;
-        media = await ChatMedia.create({
+        chat = await Chats.create({
           senderID,
           receiverID,
           size,
           type,
           url,
+          status: "media",
         });
       }
 
       if (chat) {
-        io.to(roomID).emit("receive_private_message", {
-          type: "chat",
-          data: chat,
-        });
-      }
-
-      if (media) {
-        io.to(roomID).emit("receive_private_message", {
-          type: "media",
-          data: media,
-        });
+        io.to(roomID).emit("receive_private_message", chat);
       }
     } catch (err) {
       console.error("Error sending private message:", err);

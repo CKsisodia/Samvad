@@ -3,8 +3,8 @@ const sequelize = require("../db/database");
 const Users = require("./users");
 const Group = require("./group");
 
-const GroupMedia = sequelize.define(
-  "groupmedia",
+const ArchivedGroupChats = sequelize.define(
+  "archivedgroupchat",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -20,14 +20,6 @@ const GroupMedia = sequelize.define(
         key: "id",
       },
     },
-    groupID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Group,
-        key: "id",
-      },
-    },
     senderName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -37,15 +29,31 @@ const GroupMedia = sequelize.define(
       allowNull: true,
       defaultValue: "#e534eb",
     },
+    groupID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Group,
+        key: "id",
+      },
+    },
+    message: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     size: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    status: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -55,10 +63,10 @@ const GroupMedia = sequelize.define(
   }
 );
 
-Group.hasMany(GroupMedia, { foreignKey: "senderID" });
-GroupMedia.belongsTo(Group, { foreignKey: "senderID", as: "Sender" });
+Group.hasMany(ArchivedGroupChats, { foreignKey: "senderID" });
+ArchivedGroupChats.belongsTo(Group, { foreignKey: "senderID", as: "Sender" });
 
-Group.hasMany(GroupMedia, { foreignKey: "groupID" });
-GroupMedia.belongsTo(Group, { foreignKey: "groupID", as: "Group" });
+Group.hasMany(ArchivedGroupChats, { foreignKey: "groupID" });
+ArchivedGroupChats.belongsTo(Group, { foreignKey: "groupID", as: "Group" });
 
-module.exports = GroupMedia;
+module.exports = ArchivedGroupChats;

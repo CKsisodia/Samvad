@@ -29,12 +29,27 @@ const Chats = sequelize.define(
     },
     message: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    size: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    status: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     timestamps: true,
-    paranoid: true,
   }
 );
 

@@ -33,7 +33,6 @@ const Users = sequelize.define(
   },
   {
     timestamps: true,
-    paranoid: true,
   }
 );
 

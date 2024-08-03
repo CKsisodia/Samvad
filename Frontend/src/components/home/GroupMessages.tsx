@@ -277,7 +277,7 @@ const GroupMessages = () => {
             <MessageBubble
               key={row?.id}
               style={messageStyle}
-              className={row?.type ? "media" : ""}
+              className={row?.status === "media" ? "media" : ""}
             >
               {!isOwnMessage && showSenderName && (
                 <Typography
@@ -290,8 +290,10 @@ const GroupMessages = () => {
                   {row?.senderName}
                 </Typography>
               )}
-              <Typography>{row?.message}</Typography>
-              {row?.url && renderMedia(row?.type, row?.url)}
+              {row?.status === "text" && (
+                <Typography>{row?.message}</Typography>
+              )}
+              {row?.status === "media" && renderMedia(row?.type, row?.url)}
             </MessageBubble>
           );
         })}

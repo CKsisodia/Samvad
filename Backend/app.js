@@ -26,12 +26,9 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`New user connected: ${socket.id}`);
-
   connectionHandler(socket);
   privateMessageHandler(socket, io);
   groupChatHandler(socket, io);
-
   socket.on("disconnect", () => {
     console.log(`Socket disconnected: ${socket.id}`);
   });
@@ -48,7 +45,7 @@ app.use(
   })
 );
 app.options(
-  "https://prod-samvad.d2jfovxlvu879a.amplifyapp.com",
+  "*",
   cors({
     origin: true,
     optionsSuccessStatus: 200,

@@ -19,7 +19,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3001",
+    origin: "https://samvad-prod.e-cloud.ch",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -48,7 +48,7 @@ app.use(
   })
 );
 app.options(
-  "http://localhost:3001",
+  "https://samvad-prod.e-cloud.ch",
   cors({
     origin: true,
     optionsSuccessStatus: 200,

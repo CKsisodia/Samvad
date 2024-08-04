@@ -39,16 +39,17 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 app.use(
   cors({
-    origin: true,
-    optionsSuccessStatus: 200,
+    origin: "https://prod-samvad.d2jfovxlvu879a.amplifyapp.com",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
+
 app.options(
   "*",
   cors({
-    origin: true,
-    optionsSuccessStatus: 200,
+    origin: "https://prod-samvad.d2jfovxlvu879a.amplifyapp.com",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );

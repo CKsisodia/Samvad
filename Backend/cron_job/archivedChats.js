@@ -8,7 +8,10 @@ exports.archivedChats = async () => {
       chats = await Chats.findAll();
       if (chats.length > 0) {
         await ArchivedChats.bulkCreate(
-          chats.map((chat) => chat.get({ plain: true }))
+          chats.map((chat) => {
+            const { id, ...rest } = chat.get({ plain: true });
+            return rest;
+          })
         );
       }
       await Chats.destroy({ truncate: true });

@@ -19,7 +19,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://samvad-prod.e-cloud.ch",
+    origin: "https://prod-samvad.d2jfovxlvu879a.amplifyapp.com",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -48,7 +48,7 @@ app.use(
   })
 );
 app.options(
-  "https://samvad-prod.e-cloud.ch",
+  "https://prod-samvad.d2jfovxlvu879a.amplifyapp.com",
   cors({
     origin: true,
     optionsSuccessStatus: 200,
